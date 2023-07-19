@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CART">
+
+
+ <insert id="INSERT" parameterType="cart"  >
+	insert into CartTBL(cartId,custNo,productId,amount) 
+	values (seq_CartTBL.nextval,#{custNo},#{productId},#{amount})
+ </insert>
+ 
+ <select id="SELECTALL" resultType="cart" parameterType="cart">
+   select cartId,custNo,c.productId,amount,productName,productPrice,productImg  as productImgStr
+   from CartTBL c join productTBL p on c.productId=p.productId where custNo=#{custNo}
+ </select>
+
+
+ <delete id="DELETE" parameterType="cart"  >
+	delete from CartTBL where cartId=#{cartId}
+ </delete>
+ 
+ <delete id="DELETEALL" parameterType="cart"  >
+	delete from CartTBL where custNo=#{custNo}
+ </delete>
+ 
+  <update id="UPDATE" parameterType="cart"  >
+	update CartTBL set amount=#{amount} where cartId=#{cartId}
+ </update>
+ 
+ <insert id="OrderMoney" parameterType="OrderMoney"  >
+	insert into orderMoney(idx,custNo,baesongbi,totalMoney) 
+	values (seq_CartTBL.nextval,#{OcustNo},#{baesongbi},#{totalMoney})
+ </insert>
+ 
+ <insert id="OrderJumunseo" parameterType="OrderJumunseo"  >
+	insert into orderJumunseo(idx,cartId,custNo,productId,amount,productName,orderG) 
+	values (seq_CartTBL.nextval,#{cartId},#{custNo},#{productId},#{amount},#{productName},#{orderG})
+ </insert>
+ 
+ <select id="orderG" resultType="int" parameterType="OrderMoney">
+   select max(idx) idx from orderMoney where custNo=#{OcustNo}
+ </select>
+ 
+  <select id="SELECTMONEY" resultType="OrderMoney" parameterType="OrderMoney">
+   select idx,custNo as OcustNo,baesongbi,totalMoney,getDate from orderMoney order by idx desc
+ </select>
+ 
+</mapper>	
